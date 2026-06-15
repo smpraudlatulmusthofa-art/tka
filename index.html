@@ -1,410 +1,278 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Portal Sertifikat TKA</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <script src="https://unpkg.com/lucide@latest"></script>
 
-<title>Sertifikat TKA - SMP Raudlatul Musthofa</title>
+    <style>
+        @keyframes gradient-animation {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
 
-<script src="https://cdn.tailwindcss.com"></script>
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background: linear-gradient(-45deg, #4338ca, #6366f1, #7c3aed, #312e81);
+            background-size: 400% 400%;
+            animation: gradient-animation 15s ease infinite;
+        }
 
-<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+        .glass-card {
+            background: rgba(255, 255, 255, .97);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, .35);
+        }
 
-<script src="https://unpkg.com/lucide@latest"></script>
-
-<style>
-
-@keyframes gradient-animation{
-0%{background-position:0% 50%;}
-50%{background-position:100% 50%;}
-100%{background-position:0% 50%;}
-}
-
-body{
-font-family:'Plus Jakarta Sans',sans-serif;
-background:
-linear-gradient(
--45deg,
-#4338ca,
-#6366f1,
-#7c3aed,
-#312e81
-);
-background-size:400% 400%;
-animation:gradient-animation 15s ease infinite;
-}
-
-.glass-card{
-background:rgba(255,255,255,.97);
-backdrop-filter:blur(20px);
-border:1px solid rgba(255,255,255,.35);
-}
-
-.input-focus-effect:focus{
-background:white;
-border-color:#6366f1;
-box-shadow:0 0 0 4px rgba(99,102,241,.2);
-}
-
-</style>
+        .input-focus-effect:focus {
+            background: white;
+            border-color: #6366f1;
+            box-shadow: 0 0 0 4px rgba(99, 102, 241, .2);
+        }
+    </style>
 </head>
 
 <body class="min-h-screen flex items-center justify-center p-5">
 
-<div class="max-w-md w-full">
-
-<div class="glass-card rounded-[2.5rem] overflow-hidden shadow-[0_25px_60px_-15px_rgba(0,0,0,0.35)]">
-
-<div class="p-8 text-center bg-white">
-
-<div class="flex justify-center mb-5">
-
-<div class="relative">
-
-<div class="absolute inset-0 bg-indigo-200 rounded-full blur-2xl opacity-40"></div>
-
-<div class="relative w-24 h-24 bg-white rounded-full flex items-center justify-center p-3 shadow-sm border border-indigo-50">
-
-<img
-src="logo.png"
-alt="Logo Sekolah"
-class="w-full h-auto object-contain">
-
-</div>
-
-</div>
-
-</div>
-
-<p class="text-[10px] font-bold uppercase tracking-[0.3em] text-indigo-500 mb-2">
-
-Portal Sertifikat Akademik
-
-</p>
-
-<h1 class="text-2xl font-extrabold text-slate-800 leading-tight">
-
-SERTIFIKAT TKA
-
-</h1>
-
-<div id="namaSekolah"
-class="mt-3 text-sm font-bold text-slate-600">
-
-Memuat Data Sekolah...
-
-</div>
-
-<div class="flex justify-center gap-2 flex-wrap mt-4">
-
-<span id="npsnBadge"
-class="px-3 py-1 rounded-full bg-indigo-50 text-indigo-600 text-xs font-bold">
-
-NPSN
-
-</span>
-
-<span id="tahunBadge"
-class="px-3 py-1 rounded-full bg-violet-50 text-violet-600 text-xs font-bold">
-
-TAHUN AJARAN
-
-</span>
-
-</div>
-
-</div>
-
-<div class="p-8 pt-2">
-
-<div class="relative">
-
-<div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-indigo-500">
-
-<i data-lucide="search" class="w-5 h-5"></i>
-
-</div>
-
-<input
-id="nisn"
-type="text"
-placeholder="Masukkan NISN Peserta..."
-class="input-focus-effect w-full pl-12 pr-5 py-4 rounded-2xl border-2 border-indigo-100 bg-indigo-50/50 outline-none text-slate-700 font-bold placeholder-indigo-300 transition-all duration-300">
-
-</div>
-
-<button
-id="btnCari"
-onclick="searchData()"
-class="w-full mt-4 bg-gradient-to-r from-indigo-600 to-violet-600 text-white py-4 rounded-2xl font-bold flex items-center justify-center gap-3 hover:from-indigo-700 hover:to-violet-700 shadow-xl shadow-indigo-500/30 transition-all duration-300">
-
-<i data-lucide="award" class="w-5 h-5"></i>
-
-Cari Sertifikat
-
-</button>
-
-<div id="result" class="mt-8"></div>
-
-</div>
-
-<div class="p-5 bg-slate-50 text-center border-t">
-
-<p class="text-[10px] uppercase tracking-widest text-slate-400 font-bold">
-
-© 2026 SMP RAUDLATUL MUSTHOFA
-
-</p>
-
-</div>
-
-</div>
-
-</div>
-
-<script>
-
-const API_URL = "https://script.google.com/macros/s/AKfycbxin5VLZm6G0pGZxGs8ck_KTaQ5smn4P5KFRNatatUeGxZBQmYUrOrLgzeVdnwl-ms/exec";
-
-async function loadInfo(){
-
-try{
-
-const response =
-await fetch(API_URL);
-
-const json =
-await response.json();
-
-document.getElementById("namaSekolah").innerText =
-json.sekolah || "SMP Raudlatul Musthofa";
-
-document.getElementById("npsnBadge").innerText =
-"NPSN : " + (json.npsn || "-");
-
-document.getElementById("tahunBadge").innerText =
-"TA : " + (json.tahun || "-");
-
-}catch(err){
-
-document.getElementById("namaSekolah").innerText =
-"Gagal memuat data sekolah";
-
-}
-
-}
-
-async function searchData(){
-
-const nisn =
-document.getElementById("nisn").value.trim();
-
-const resBox =
-document.getElementById("result");
-
-if(!nisn){
-
-resBox.innerHTML=`
-<div class="bg-amber-50 border border-amber-100 rounded-2xl p-4 text-center text-amber-700 font-bold text-sm">
-Masukkan NISN terlebih dahulu
-</div>
-`;
-
-return;
-
-}
-
-const btn =
-document.getElementById("btnCari");
-
-btn.disabled = true;
-
-btn.innerHTML = `
-<div class="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
-<span>Mencari...</span>
-`;
-
-resBox.innerHTML=`
-<div class="flex flex-col items-center py-8">
-<div class="w-10 h-10 border-4 border-indigo-100 border-t-indigo-600 rounded-full animate-spin"></div>
-<p class="mt-4 text-[10px] uppercase tracking-widest text-indigo-400 font-bold">
-Mencari Sertifikat...
-</p>
-</div>
-`;
-
-try{
-
-const req =
-await fetch(
-API_URL +
-'?nisn=' +
-encodeURIComponent(nisn)
-);
-
-const json =
-await req.json();
-
-if(!json.data){
-
-resBox.innerHTML=`
-<div class="bg-white rounded-[2rem] p-8 text-center border border-slate-100">
-<div class="w-14 h-14 mx-auto mb-4 rounded-full bg-slate-100 flex items-center justify-center">
-<i data-lucide="search-x" class="w-6 h-6 text-slate-400"></i>
-</div>
-<p class="font-bold text-slate-600">
-Data tidak ditemukan
-</p>
-</div>
-`;
-
-lucide.createIcons();
-
-btn.disabled = false;
-
-btn.innerHTML = `
-<i data-lucide="award"></i>
-Cari Sertifikat
-`;
-
-lucide.createIcons();
-
-return;
-
-}
-
-const d = json.data;
-
-resBox.innerHTML=`
-
-<div class="space-y-4">
-
-<div class="flex justify-center">
-
-<span class="px-4 py-2 rounded-full bg-emerald-50 text-emerald-600 text-xs font-bold uppercase tracking-widest">
-
-✓ Sertifikat Ditemukan
-
-</span>
-
-</div>
-
-<div class="bg-gradient-to-br from-indigo-50 to-white p-6 rounded-[2rem] border border-indigo-100">
-
-<div class="flex items-center gap-4 mb-5">
-
-<div class="bg-indigo-600 text-white p-3 rounded-2xl">
-
-<i data-lucide="award"></i>
-
-</div>
-
-<div>
-
-<p class="text-[10px] uppercase tracking-widest text-indigo-400 font-bold">
-
-Peserta TKA
-
-</p>
-
-<h3 class="text-lg font-extrabold text-slate-800 uppercase">
-
-${d.nama}
-
-</h3>
-
-</div>
-
-</div>
-
-<div class="grid grid-cols-2 gap-3">
-
-<div class="bg-white p-4 rounded-2xl border">
-
-<p class="text-[10px] uppercase text-slate-400 font-bold mb-1">
-
-NISN
-
-</p>
-
-<p class="font-bold text-slate-700">
-
-${d.nisn}
-
-</p>
-
-</div>
-
-<div class="bg-white p-4 rounded-2xl border">
-
-<p class="text-[10px] uppercase text-slate-400 font-bold mb-1">
-
-Tahun Ajaran
-
-</p>
-
-<p class="font-bold text-slate-700">
-
-${json.tahun}
-
-</p>
-
-</div>
-
-</div>
-
-</div>
-
-<a
-href="${d.link}"
-target="_blank"
-class="w-full flex items-center justify-center gap-3 bg-gradient-to-r from-indigo-600 to-violet-600 text-white py-4 rounded-2xl font-bold shadow-xl shadow-indigo-500/30">
-
-<i data-lucide="download"></i>
-
-Download Sertifikat
-
-</a>
-
-</div>
-`;
-
-}catch(err){
-
-resBox.innerHTML=`
-<div class="bg-red-50 border border-red-100 rounded-2xl p-4 text-center text-red-600 font-bold text-sm">
-Gagal menghubungi server
-</div>
-`;
-
-}
-
-btn.disabled = false;
-
-btn.innerHTML = `
-<i data-lucide="award"></i>
-Cari Sertifikat
-`;
-
-lucide.createIcons();
-
-}
-
-document
-.getElementById("nisn")
-.addEventListener("keypress",function(e){
-
-if(e.key==="Enter"){
-searchData();
-}
-
-});
-
-loadInfo();
-
-lucide.createIcons();
-
-</script>
-
+    <div class="max-w-md w-full">
+        <div class="glass-card rounded-[2.5rem] overflow-hidden shadow-[0_25px_60px_-15px_rgba(0,0,0,0.35)]">
+            
+            <div class="p-8 text-center bg-white">
+                <div class="flex justify-center mb-5">
+                    <div class="relative">
+                        <div class="absolute inset-0 bg-indigo-200 rounded-full blur-2xl opacity-40"></div>
+                        <div class="relative w-24 h-24 bg-white rounded-full flex items-center justify-center p-3 shadow-sm border border-indigo-50">
+                            <img src="logo.png" alt="Logo Sekolah" class="w-full h-auto object-contain">
+                        </div>
+                    </div>
+                </div>
+
+                <p class="text-[10px] font-bold uppercase tracking-[0.3em] text-indigo-500 mb-2">
+                    Portal Sertifikat Akademik
+                </p>
+                <h1 class="text-2xl font-extrabold text-slate-800 leading-tight">
+                    SERTIFIKAT TKA
+                </h1>
+
+                <div id="namaSekolah" class="mt-3 text-sm font-bold text-slate-600">
+                    Menghubungkan ke Server...
+                </div>
+
+                <div class="flex justify-center gap-2 flex-wrap mt-4">
+                    <span id="npsnBadge" class="px-3 py-1 rounded-full bg-indigo-50 text-indigo-600 text-xs font-bold">
+                        NPSN: ...
+                    </span>
+                    <span id="tahunBadge" class="px-3 py-1 rounded-full bg-violet-50 text-violet-600 text-xs font-bold">
+                        TA: ...
+                    </span>
+                </div>
+            </div>
+
+            <div class="p-8 pt-2">
+                <div class="relative">
+                    <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-indigo-500">
+                        <i data-lucide="search" class="w-5 h-5"></i>
+                    </div>
+                    <input id="nisn" type="text" placeholder="Masukkan NISN Peserta..."
+                        class="input-focus-effect w-full pl-12 pr-5 py-4 rounded-2xl border-2 border-indigo-100 bg-indigo-50/50 outline-none text-slate-700 font-bold placeholder-indigo-300 transition-all duration-300">
+                </div>
+
+                <button id="btnCari" onclick="searchData()"
+                    class="w-full mt-4 bg-gradient-to-r from-indigo-600 to-violet-600 text-white py-4 rounded-2xl font-bold flex items-center justify-center gap-3 hover:from-indigo-700 hover:to-violet-700 shadow-xl shadow-indigo-500/30 transition-all duration-300">
+                    <i data-lucide="award" class="w-5 h-5"></i>
+                    <span>Cari Sertifikat</span>
+                </button>
+
+                <div id="result" class="mt-8"></div>
+            </div>
+
+            <div class="p-5 bg-slate-50 text-center border-t">
+                <p id="footerCopyright" class="text-[10px] uppercase tracking-widest text-slate-400 font-bold">
+                    © 2026 LOADING DATA SEKOLAH...
+                </p>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        /* ==========================================================================
+           KONFIGURASI API LINK GOOGLE APPS SCRIPT (GAS)
+           Ganti URL di bawah ini jika Anda men-deploy ulang kode macros Anda.
+           ========================================================================== */
+        const API_URL = "https://script.google.com/macros/s/AKfycbxin5VLZm6G0pGZxGs8ck_KTaQ5smn4P5KFRNatatUeGxZBQmYUrOrLgzeVdnwl-ms/exec";
+        
+        // State global untuk menampung data informasi dari sheet SETTING
+        let infoSekolah = {
+            sekolah: "",
+            npsn: "",
+            tahun: ""
+        };
+
+        // Fungsi memuat data identitas dari sheet SETTING secara dinamis
+        async function loadInfo() {
+            try {
+                const response = await fetch(API_URL);
+                const json = await response.json();
+
+                if (json.success) {
+                    infoSekolah.sekolah = json.sekolah || "Nama Sekolah Tidak Diatur";
+                    infoSekolah.npsn = json.npsn || "-";
+                    infoSekolah.tahun = json.tahun || "-";
+
+                    // Update UI berdasarkan data real-time dari Sheet
+                    document.getElementById("namaSekolah").innerText = infoSekolah.sekolah;
+                    document.getElementById("npsnBadge").innerText = "NPSN : " + infoSekolah.npsn;
+                    document.getElementById("tahunBadge").innerText = "TA : " + infoSekolah.tahun;
+                    document.getElementById("footerCopyright").innerText = `© 2026 ${infoSekolah.sekolah.toUpperCase()}`;
+                    
+                    // Update Title Browser Tab secara dinamis
+                    document.title = `Sertifikat TKA - ${infoSekolah.sekolah}`;
+                }
+            } catch (err) {
+                console.error("Gagal memuat info sekolah:", err);
+                document.getElementById("namaSekolah").innerText = "Gagal memuat data sekolah";
+            }
+        }
+
+        // Fungsi pencarian data siswa berdasarkan NISN
+        async function searchData() {
+            const nisn = document.getElementById("nisn").value.trim();
+            const resBox = document.getElementById("result");
+            const btn = document.getElementById("btnCari");
+
+            if (!nisn) {
+                resBox.innerHTML = `
+                    <div class="bg-amber-50 border border-amber-100 rounded-2xl p-4 text-center text-amber-700 font-bold text-sm">
+                        Masukkan NISN terlebih dahulu
+                    </div>
+                `;
+                return;
+            }
+
+            // Set Loading State pada Tombol & Result Box
+            btn.disabled = true;
+            btn.innerHTML = `
+                <div class="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+                <span>Mencari...</span>
+            `;
+
+            resBox.innerHTML = `
+                <div class="flex flex-col items-center py-8">
+                    <div class="w-10 h-10 border-4 border-indigo-100 border-t-indigo-600 rounded-full animate-spin"></div>
+                    <p class="mt-4 text-[10px] uppercase tracking-widest text-indigo-400 font-bold">
+                        Mencari Sertifikat...
+                    </p>
+                </div>
+            `;
+
+            try {
+                const req = await fetch(API_URL + '?nisn=' + encodeURIComponent(nisn));
+                const json = await req.json();
+
+                // Jika data siswa tidak ditemukan (json.data === null)
+                if (!json.data) {
+                    resBox.innerHTML = `
+                        <div class="bg-white rounded-[2rem] p-8 text-center border border-slate-100">
+                            <div class="w-14 h-14 mx-auto mb-4 rounded-full bg-slate-100 flex items-center justify-center">
+                                <i data-lucide="search-x" class="w-6 h-6 text-slate-400"></i>
+                            </div>
+                            <p class="font-bold text-slate-600">
+                                Data tidak ditemukan
+                            </p>
+                        </div>
+                    `;
+                } else {
+                    // Jika data ditemukan (diambil dari parameter json.data dan sheet SETTING)
+                    const d = json.data;
+                    resBox.innerHTML = `
+                        <div class="space-y-4">
+                            <div class="flex justify-center">
+                                <span class="px-4 py-2 rounded-full bg-emerald-50 text-emerald-600 text-xs font-bold uppercase tracking-widest">
+                                    ✓ Sertifikat Ditemukan
+                                </span>
+                            </div>
+
+                            <div class="bg-gradient-to-br from-indigo-50 to-white p-6 rounded-[2rem] border border-indigo-100">
+                                <div class="flex items-center gap-4 mb-5">
+                                    <div class="bg-indigo-600 text-white p-3 rounded-2xl">
+                                        <i data-lucide="award"></i>
+                                    </div>
+                                    <div>
+                                        <p class="text-[10px] uppercase tracking-widest text-indigo-400 font-bold">
+                                            Peserta TKA
+                                        </p>
+                                        <h3 class="text-lg font-extrabold text-slate-800 uppercase">
+                                            ${d.nama}
+                                        </h3>
+                                    </div>
+                                </div>
+
+                                <div class="grid grid-cols-2 gap-3">
+                                    <div class="bg-white p-4 rounded-2xl border">
+                                        <p class="text-[10px] uppercase text-slate-400 font-bold mb-1">
+                                            NISN
+                                        </p>
+                                        <p class="font-bold text-slate-700">
+                                            ${d.nisn}
+                                        </p>
+                                    </div>
+                                    <div class="bg-white p-4 rounded-2xl border">
+                                        <p class="text-[10px] uppercase text-slate-400 font-bold mb-1">
+                                            Tahun Ajaran
+                                        </p>
+                                        <p class="font-bold text-slate-700">
+                                            ${json.tahun || infoSekolah.tahun}
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <a href="${d.link}" target="_blank"
+                                class="w-full flex items-center justify-center gap-3 bg-gradient-to-r from-indigo-600 to-violet-600 text-white py-4 rounded-2xl font-bold shadow-xl shadow-indigo-500/30 transition-all duration-300 hover:from-indigo-700 hover:to-violet-700">
+                                <i data-lucide="download"></i>
+                                <span>Download Sertifikat</span>
+                            </a>
+                        </div>
+                    `;
+                }
+            } catch (err) {
+                console.error(err);
+                resBox.innerHTML = `
+                    <div class="bg-red-50 border border-red-100 rounded-2xl p-4 text-center text-red-600 font-bold text-sm">
+                        Gagal menghubungi server
+                    </div>
+                `;
+            }
+
+            // Kembalikan tombol ke kondisi semula
+            btn.disabled = false;
+            btn.innerHTML = `
+                <i data-lucide="award" class="w-5 h-5"></i>
+                <span>Cari Sertifikat</span>
+            `;
+            
+            // Render ulang ikon Lucide pada elemen dinamis baru
+            lucide.createIcons();
+        }
+
+        // Event listener saat menekan tombol Enter pada input teks NISN
+        document.getElementById("nisn").addEventListener("keypress", function(e) {
+            if (e.key === "Enter") {
+                searchData();
+            }
+        });
+
+        // Jalankan pemuatan data informasi dari API setelah dokumen siap
+        loadInfo();
+        lucide.createIcons();
+    </script>
 </body>
 </html>
