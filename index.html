@@ -41,7 +41,15 @@
 
 <body class="min-h-screen flex items-center justify-center p-5">
 
-    <div class="max-w-md w-full">
+    <div id="initialLoader" class="fixed inset-0 bg-slate-900/60 backdrop-blur-lg flex flex-col items-center justify-center z-50 transition-opacity duration-500">
+        <div class="glass-card p-10 rounded-[2.5rem] flex flex-col items-center shadow-2xl max-w-xs w-full text-center mx-4">
+            <div class="w-16 h-16 border-4 border-indigo-100 border-t-indigo-600 rounded-full animate-spin mb-6"></div>
+            <h3 class="text-lg font-bold text-slate-800">Menghubungkan</h3>
+            <p class="text-xs text-slate-500 mt-1 font-medium tracking-wide">Memuat konfigurasi data sekolah...</p>
+        </div>
+    </div>
+
+    <div id="mainContent" class="max-w-md w-full hidden opacity-0 transition-opacity duration-500">
         <div class="glass-card rounded-[2.5rem] overflow-hidden shadow-[0_25px_60px_-15px_rgba(0,0,0,0.35)]">
             
             <div class="p-8 text-center bg-white">
@@ -57,25 +65,26 @@
                 <p class="text-[10px] font-bold uppercase tracking-[0.3em] text-indigo-500 mb-2">
                     Portal Sertifikat Akademik
                 </p>
-                <h1 class="text-2xl font-extrabold text-slate-800 leading-tight">
-                    SERTIFIKAT TKA
+                
+                <h1 id="namaSekolah" class="text-3xl font-black text-slate-800 leading-tight uppercase tracking-tight px-2">
+                    -
                 </h1>
-
-                <div id="namaSekolah" class="mt-3 text-sm font-bold text-slate-600">
-                    Menghubungkan ke Server...
+                
+                <div class="text-[11px] font-bold tracking-wider text-indigo-600 mt-2 bg-indigo-50 inline-block px-3 py-0.5 rounded-md">
+                    SERTIFIKAT TKA
                 </div>
 
-                <div class="flex justify-center gap-2 flex-wrap mt-4">
+                <div class="flex justify-center gap-2 flex-wrap mt-5">
                     <span id="npsnBadge" class="px-3 py-1 rounded-full bg-indigo-50 text-indigo-600 text-xs font-bold">
-                        NPSN: ...
+                        NPSN: -
                     </span>
                     <span id="tahunBadge" class="px-3 py-1 rounded-full bg-violet-50 text-violet-600 text-xs font-bold">
-                        TA: ...
+                        TA: -
                     </span>
                 </div>
             </div>
 
-            <div class="p-8 pt-2">
+            <div class="p-8 pt-4">
                 <div class="relative">
                     <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-indigo-500">
                         <i data-lucide="search" class="w-5 h-5"></i>
@@ -95,7 +104,7 @@
 
             <div class="p-5 bg-slate-50 text-center border-t">
                 <p id="footerCopyright" class="text-[10px] uppercase tracking-widest text-slate-400 font-bold">
-                    © 2026 LOADING DATA SEKOLAH...
+                    © 2026 -
                 </p>
             </div>
 
@@ -109,12 +118,7 @@
            ========================================================================== */
         const API_URL = "https://script.google.com/macros/s/AKfycbxin5VLZm6G0pGZxGs8ck_KTaQ5smn4P5KFRNatatUeGxZBQmYUrOrLgzeVdnwl-ms/exec";
         
-        // State global untuk menampung data informasi dari sheet SETTING
-        let infoSekolah = {
-            sekolah: "",
-            npsn: "",
-            tahun: ""
-        };
+        let infoSekolah = { sekolah: "", npsn: "", tahun: "" };
 
         // Fungsi memuat data identitas dari sheet SETTING secara dinamis
         async function loadInfo() {
@@ -133,12 +137,30 @@
                     document.getElementById("tahunBadge").innerText = "TA : " + infoSekolah.tahun;
                     document.getElementById("footerCopyright").innerText = `© 2026 ${infoSekolah.sekolah.toUpperCase()}`;
                     
-                    // Update Title Browser Tab secara dinamis
                     document.title = `Sertifikat TKA - ${infoSekolah.sekolah}`;
+
+                    // TAMPILKAN UTAMA & SEMBUNYIKAN LOADER
+                    const loader = document.getElementById("initialLoader");
+                    const main = document.getElementById("mainContent");
+                    
+                    loader.classList.add("opacity-0");
+                    setTimeout(() => {
+                        loader.classList.add("hidden"); // hilangkan dari struktur dom setelah fadeout
+                        main.classList.remove("hidden");
+                        setTimeout(() => {
+                            main.classList.remove("opacity-0");
+                        }, 50);
+                    }, 500);
                 }
             } catch (err) {
                 console.error("Gagal memuat info sekolah:", err);
-                document.getElementById("namaSekolah").innerText = "Gagal memuat data sekolah";
+                // Jika server GAS bermasalah, loader diubah infonya agar user tahu ada error
+                document.getElementById("initialLoader").innerHTML = `
+                    <div class="glass-card p-8 rounded-[2.5rem] text-center mx-4 border-red-200">
+                        <div class="text-red-500 text-xl font-bold mb-2">Koneksi Gagal</div>
+                        <p class="text-xs text-slate-500">Gagal mengambil data dari Google Sheets. Pastikan Web App sudah di-deploy dengan benar.</p>
+                    </div>
+                `;
             }
         }
 
@@ -157,7 +179,6 @@
                 return;
             }
 
-            // Set Loading State pada Tombol & Result Box
             btn.disabled = true;
             btn.innerHTML = `
                 <div class="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
@@ -177,7 +198,6 @@
                 const req = await fetch(API_URL + '?nisn=' + encodeURIComponent(nisn));
                 const json = await req.json();
 
-                // Jika data siswa tidak ditemukan (json.data === null)
                 if (!json.data) {
                     resBox.innerHTML = `
                         <div class="bg-white rounded-[2rem] p-8 text-center border border-slate-100">
@@ -190,7 +210,6 @@
                         </div>
                     `;
                 } else {
-                    // Jika data ditemukan (diambil dari parameter json.data dan sheet SETTING)
                     const d = json.data;
                     resBox.innerHTML = `
                         <div class="space-y-4">
@@ -252,25 +271,21 @@
                 `;
             }
 
-            // Kembalikan tombol ke kondisi semula
             btn.disabled = false;
             btn.innerHTML = `
                 <i data-lucide="award" class="w-5 h-5"></i>
                 <span>Cari Sertifikat</span>
             `;
             
-            // Render ulang ikon Lucide pada elemen dinamis baru
             lucide.createIcons();
         }
 
-        // Event listener saat menekan tombol Enter pada input teks NISN
         document.getElementById("nisn").addEventListener("keypress", function(e) {
             if (e.key === "Enter") {
                 searchData();
             }
         });
 
-        // Jalankan pemuatan data informasi dari API setelah dokumen siap
         loadInfo();
         lucide.createIcons();
     </script>
