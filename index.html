@@ -6,9 +6,7 @@
     <title>Portal Sertifikat TKA</title>
     
     <script src="https://cdn.tailwindcss.com"></script>
-    
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    
     <script src="https://unpkg.com/lucide@latest"></script>
 
     <style>
@@ -128,7 +126,7 @@
                     infoSekolah.sekolah = json.sekolah || "Nama Sekolah Tidak Diatur";
                     infoSekolah.npsn = json.npsn || "-";
                     infoSekolah.tahun = json.tahun || "-";
-                    infoSekolah.logoDrive = json.logoDrive || ""; // Simpan url logo dari B4
+                    infoSekolah.logoDrive = json.logoDrive || "";
 
                     // Update UI Teks
                     document.getElementById("namaSekolah").innerText = infoSekolah.sekolah;
@@ -137,21 +135,20 @@
                     document.getElementById("footerCopyright").innerText = `© 2026 ${infoSekolah.sekolah.toUpperCase()}`;
                     document.title = `Sertifikat TKA - ${infoSekolah.sekolah}`;
 
-                    // LOGIKA FALLBACK LOGO: Jika logo.png gagal di-load, ganti ke link B4
+                    // LOGIKA FALLBACK LOGO
                     const imgLogo = document.getElementById("logoSekolah");
                     imgLogo.onerror = function() {
                         if (infoSekolah.logoDrive) {
                             imgLogo.src = infoSekolah.logoDrive;
                         }
-                        imgLogo.onerror = null; // Menghindari perulangan tak terbatas jika link drive juga rusak
+                        imgLogo.onerror = null; 
                     };
 
-                    // Memaksa memicu ulang pengecekan jika logo.png sudah terlanjur gagal sebelum data GAS selesai ditarik
                     if (imgLogo.complete && imgLogo.naturalWidth === 0 && infoSekolah.logoDrive) {
                         imgLogo.src = infoSekolah.logoDrive;
                     }
 
-                    // Tampilkan konten utama, sembunyikan loader
+                    // Tampilkan konten utama, sembunyikan loader awal
                     const loader = document.getElementById("initialLoader");
                     const main = document.getElementById("mainContent");
                     
@@ -187,20 +184,15 @@
                 return;
             }
 
+            // Kunci tombol & aktifkan efek spinner loading di tombol
             btn.disabled = true;
             btn.innerHTML = `
                 <div class="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
                 <span>Mencari...</span>
             `;
 
-            resBox.innerHTML = `
-                <div class="flex flex-col items-center py-8">
-                    <div class="w-10 h-10 border-4 border-indigo-100 border-t-indigo-600 rounded-full animate-spin"></div>
-                    <p class="mt-4 text-[10px] uppercase tracking-widest text-indigo-400 font-bold">
-                        Mencari Sertifikat...
-                    </p>
-                </div>
-            `;
+            // Bersihkan box hasil sebelumnya agar tidak dobel/redundant saat memuat data baru
+            resBox.innerHTML = "";
 
             try {
                 const req = await fetch(API_URL + '?nisn=' + encodeURIComponent(nisn));
@@ -279,6 +271,7 @@
                 `;
             }
 
+            // Kembalikan tombol ke keadaan semula setelah proses fetch selesai
             btn.disabled = false;
             btn.innerHTML = `
                 <i data-lucide="award" class="w-5 h-5"></i>
