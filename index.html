@@ -57,7 +57,7 @@
                     <div class="relative">
                         <div class="absolute inset-0 bg-indigo-200 rounded-full blur-2xl opacity-40"></div>
                         <div class="relative w-24 h-24 bg-white rounded-full flex items-center justify-center p-3 shadow-sm border border-indigo-50">
-                            <img src="logo.png" alt="Logo Sekolah" class="w-full h-auto object-contain">
+                            <img id="logoSekolah" src="logo.png" alt="Logo Sekolah" class="w-full h-auto object-contain">
                         </div>
                     </div>
                 </div>
@@ -114,13 +114,11 @@
     <script>
         /* ==========================================================================
            KONFIGURASI API LINK GOOGLE APPS SCRIPT (GAS)
-           Ganti URL di bawah ini jika Anda men-deploy ulang kode macros Anda.
            ========================================================================== */
         const API_URL = "https://script.google.com/macros/s/AKfycbxin5VLZm6G0pGZxGs8ck_KTaQ5smn4P5KFRNatatUeGxZBQmYUrOrLgzeVdnwl-ms/exec";
         
-        let infoSekolah = { sekolah: "", npsn: "", tahun: "" };
+        let infoSekolah = { sekolah: "", npsn: "", tahun: "", logoDrive: "" };
 
-        // Fungsi memuat data identitas dari sheet SETTING secara dinamis
         async function loadInfo() {
             try {
                 const response = await fetch(API_URL);
@@ -130,31 +128,42 @@
                     infoSekolah.sekolah = json.sekolah || "Nama Sekolah Tidak Diatur";
                     infoSekolah.npsn = json.npsn || "-";
                     infoSekolah.tahun = json.tahun || "-";
+                    infoSekolah.logoDrive = json.logoDrive || ""; // Simpan url logo dari B4
 
-                    // Update UI berdasarkan data real-time dari Sheet
+                    // Update UI Teks
                     document.getElementById("namaSekolah").innerText = infoSekolah.sekolah;
                     document.getElementById("npsnBadge").innerText = "NPSN : " + infoSekolah.npsn;
                     document.getElementById("tahunBadge").innerText = "TA : " + infoSekolah.tahun;
                     document.getElementById("footerCopyright").innerText = `© 2026 ${infoSekolah.sekolah.toUpperCase()}`;
-                    
                     document.title = `Sertifikat TKA - ${infoSekolah.sekolah}`;
 
-                    // TAMPILKAN UTAMA & SEMBUNYIKAN LOADER
+                    // LOGIKA FALLBACK LOGO: Jika logo.png gagal di-load, ganti ke link B4
+                    const imgLogo = document.getElementById("logoSekolah");
+                    imgLogo.onerror = function() {
+                        if (infoSekolah.logoDrive) {
+                            imgLogo.src = infoSekolah.logoDrive;
+                        }
+                        imgLogo.onerror = null; // Menghindari perulangan tak terbatas jika link drive juga rusak
+                    };
+
+                    // Memaksa memicu ulang pengecekan jika logo.png sudah terlanjur gagal sebelum data GAS selesai ditarik
+                    if (imgLogo.complete && imgLogo.naturalWidth === 0 && infoSekolah.logoDrive) {
+                        imgLogo.src = infoSekolah.logoDrive;
+                    }
+
+                    // Tampilkan konten utama, sembunyikan loader
                     const loader = document.getElementById("initialLoader");
                     const main = document.getElementById("mainContent");
                     
                     loader.classList.add("opacity-0");
                     setTimeout(() => {
-                        loader.classList.add("hidden"); // hilangkan dari struktur dom setelah fadeout
+                        loader.classList.add("hidden");
                         main.classList.remove("hidden");
-                        setTimeout(() => {
-                            main.classList.remove("opacity-0");
-                        }, 50);
+                        setTimeout(() => { main.classList.remove("opacity-0"); }, 50);
                     }, 500);
                 }
             } catch (err) {
                 console.error("Gagal memuat info sekolah:", err);
-                // Jika server GAS bermasalah, loader diubah infonya agar user tahu ada error
                 document.getElementById("initialLoader").innerHTML = `
                     <div class="glass-card p-8 rounded-[2.5rem] text-center mx-4 border-red-200">
                         <div class="text-red-500 text-xl font-bold mb-2">Koneksi Gagal</div>
@@ -164,7 +173,6 @@
             }
         }
 
-        // Fungsi pencarian data siswa berdasarkan NISN
         async function searchData() {
             const nisn = document.getElementById("nisn").value.trim();
             const resBox = document.getElementById("result");
@@ -281,9 +289,7 @@
         }
 
         document.getElementById("nisn").addEventListener("keypress", function(e) {
-            if (e.key === "Enter") {
-                searchData();
-            }
+            if (e.key === "Enter") { searchData(); }
         });
 
         loadInfo();
