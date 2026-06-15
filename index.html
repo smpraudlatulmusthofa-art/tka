@@ -234,22 +234,20 @@
                                     </div>
                                 </div>
 
-                                <div class="grid grid-cols-2 gap-3">
-                                    <div class="bg-white p-4 rounded-2xl border">
-                                        <p class="text-[10px] uppercase text-slate-400 font-bold mb-1">
-                                            NISN
-                                        </p>
-                                        <p class="font-bold text-slate-700">
+                                <div class="bg-white p-4 rounded-2xl border flex items-center justify-between">
+                                    <div>
+                                        <div class="flex items-center gap-1.5 text-slate-400 mb-0.5">
+                                            <i data-lucide="fingerprint" class="w-3.5 h-3.5 text-indigo-500"></i>
+                                            <p class="text-[10px] uppercase font-bold tracking-wider">
+                                                Nomor Induk Siswa Nasional (NISN)
+                                            </p>
+                                        </div>
+                                        <p class="text-base font-black text-slate-700 tracking-wide">
                                             ${d.nisn}
                                         </p>
                                     </div>
-                                    <div class="bg-white p-4 rounded-2xl border">
-                                        <p class="text-[10px] uppercase text-slate-400 font-bold mb-1">
-                                            Tahun Ajaran
-                                        </p>
-                                        <p class="font-bold text-slate-700">
-                                            ${json.tahun || infoSekolah.tahun}
-                                        </p>
+                                    <div class="bg-indigo-50 px-3 py-1 rounded-lg text-[10px] font-bold text-indigo-600 uppercase tracking-wider">
+                                        Aktif
                                     </div>
                                 </div>
                             </div>
