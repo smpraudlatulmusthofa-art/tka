@@ -2,15 +2,440 @@
 <html lang="id">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <title>Portal Dokumen Peserta</title>
-<!-- Ganti URL_WEBAPP_GAS_ANDA pada script -->
+
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/lucide@latest"></script>
+
+<style>
+
+:root{
+  --primary:#2563eb;
+  --primary2:#7c3aed;
+  --success:#10b981;
+  --danger:#ef4444;
+  --text:#0f172a;
+  --muted:#64748b;
+}
+
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+  font-family:'Outfit',sans-serif;
+}
+
+body{
+  min-height:100vh;
+  background:
+  radial-gradient(circle at top left,#60a5fa 0%,transparent 35%),
+  radial-gradient(circle at bottom right,#8b5cf6 0%,transparent 35%),
+  linear-gradient(135deg,#0f172a,#1e293b);
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  padding:20px;
+}
+
+.loader-screen{
+  position:fixed;
+  inset:0;
+  background:#0f172a;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  z-index:9999;
+}
+
+.loader-box{
+  text-align:center;
+  color:white;
+}
+
+.spinner{
+  width:70px;
+  height:70px;
+  border:5px solid rgba(255,255,255,.15);
+  border-top:5px solid white;
+  border-radius:50%;
+  margin:auto;
+  animation:spin 1s linear infinite;
+}
+
+@keyframes spin{
+  to{transform:rotate(360deg);}
+}
+
+.loader-box h3{
+  margin-top:20px;
+}
+
+.container{
+  width:100%;
+  max-width:760px;
+  background:rgba(255,255,255,.95);
+  backdrop-filter:blur(20px);
+  border-radius:30px;
+  padding:40px;
+  box-shadow:0 30px 80px rgba(0,0,0,.25);
+}
+
+.logo{
+  width:120px;
+  height:120px;
+  display:block;
+  margin:auto;
+  object-fit:contain;
+}
+
+.school{
+  text-align:center;
+  margin-top:15px;
+}
+
+.school h1{
+  font-size:34px;
+  color:var(--text);
+}
+
+.school p{
+  color:var(--muted);
+  margin-top:8px;
+}
+
+.badges{
+  display:flex;
+  justify-content:center;
+  gap:10px;
+  margin-top:15px;
+  flex-wrap:wrap;
+}
+
+.badge{
+  background:#eef2ff;
+  color:#4338ca;
+  padding:10px 16px;
+  border-radius:999px;
+  font-size:14px;
+  font-weight:600;
+}
+
+.search-card{
+  margin-top:30px;
+  background:white;
+  border-radius:24px;
+  padding:25px;
+  border:1px solid #e2e8f0;
+}
+
+.search-title{
+  text-align:center;
+  font-size:22px;
+  font-weight:700;
+}
+
+.search-sub{
+  text-align:center;
+  color:var(--muted);
+  margin-top:6px;
+  margin-bottom:20px;
+}
+
+.input-group{
+  position:relative;
+}
+
+.input-group i{
+  position:absolute;
+  left:18px;
+  top:18px;
+  color:#94a3b8;
+}
+
+.input{
+  width:100%;
+  height:60px;
+  padding-left:50px;
+  border:none;
+  outline:none;
+  background:#f8fafc;
+  border-radius:18px;
+  font-size:16px;
+}
+
+.btn{
+  width:100%;
+  margin-top:15px;
+  height:58px;
+  border:none;
+  border-radius:18px;
+  color:white;
+  font-size:16px;
+  font-weight:700;
+  cursor:pointer;
+  background:linear-gradient(135deg,var(--primary),var(--primary2));
+}
+
+.btn:disabled{
+  opacity:.7;
+  cursor:not-allowed;
+}
+
+.result{
+  display:none;
+  margin-top:20px;
+  padding:22px;
+  border-radius:20px;
+  background:#f8fafc;
+}
+
+.success{
+  color:var(--success);
+  font-weight:700;
+  display:flex;
+  align-items:center;
+  gap:10px;
+}
+
+.field{
+  margin-top:15px;
+}
+
+.label{
+  color:var(--muted);
+  font-size:13px;
+}
+
+.value{
+  color:var(--text);
+  font-size:18px;
+  font-weight:700;
+}
+
+.download{
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  margin-top:20px;
+  text-decoration:none;
+  color:white;
+  background:var(--success);
+  padding:14px 20px;
+  border-radius:14px;
+  font-weight:700;
+}
+
+.message{
+  display:none;
+  margin-top:20px;
+  padding:16px;
+  border-radius:16px;
+  text-align:center;
+}
+
+.error{
+  background:#fef2f2;
+  color:#dc2626;
+}
+
+@media(max-width:640px){
+
+.container{
+  padding:25px;
+}
+
+.school h1{
+  font-size:24px;
+}
+
+}
+
+</style>
 </head>
 <body>
-<h1>Template Portal Dokumen Peserta</h1>
-<p>File placeholder telah dibuat. Tempelkan HTML lengkap yang diinginkan atau lanjutkan meminta versi final yang disesuaikan.</p>
+
+<div class="loader-screen" id="loader">
+  <div class="loader-box">
+    <div class="spinner"></div>
+    <h3>Memuat Portal...</h3>
+    <p>Mohon tunggu sebentar</p>
+  </div>
+</div>
+
+<div class="container">
+
+  <img src="logo.png" class="logo">
+
+  <div class="school">
+    <h1 id="namaSekolah">Portal Dokumen</h1>
+    <p>Portal Dokumen Peserta Didik</p>
+
+    <div class="badges">
+      <div class="badge" id="npsn">NPSN</div>
+      <div class="badge" id="tahun">Tahun Ajaran</div>
+    </div>
+  </div>
+
+  <div class="search-card">
+
+    <div class="search-title">
+      Cari Dokumen Peserta
+    </div>
+
+    <div class="search-sub">
+      Masukkan NISN peserta
+    </div>
+
+    <div class="input-group">
+      <i data-lucide="search"></i>
+      <input id="nisn" class="input" placeholder="Masukkan NISN">
+    </div>
+
+    <button class="btn" id="btnCari" onclick="cari()">
+      Cari Dokumen
+    </button>
+
+    <div class="message error" id="msg"></div>
+
+    <div class="result" id="result">
+
+      <div class="success">
+        <i data-lucide="badge-check"></i>
+        Dokumen Ditemukan
+      </div>
+
+      <div class="field">
+        <div class="label">NISN</div>
+        <div class="value" id="hasilNisn"></div>
+      </div>
+
+      <div class="field">
+        <div class="label">Nama Peserta</div>
+        <div class="value" id="hasilNama"></div>
+      </div>
+
+      <a id="downloadBtn" class="download" target="_blank">
+        <i data-lucide="download"></i>
+        Download Dokumen
+      </a>
+
+    </div>
+
+  </div>
+
+</div>
+
 <script>
-const API_URL="https://script.google.com/macros/s/AKfycbxin5VLZm6G0pGZxGs8ck_KTaQ5smn4P5KFRNatatUeGxZBQmYUrOrLgzeVdnwl-ms/exec";
+
+const API_URL = "https://script.google.com/macros/s/AKfycbxin5VLZm6G0pGZxGs8ck_KTaQ5smn4P5KFRNatatUeGxZBQmYUrOrLgzeVdnwl-ms/exec";
+
+async function loadSekolah(){
+
+  try{
+
+    const res = await fetch(API_URL);
+    const json = await res.json();
+
+    document.getElementById('namaSekolah').textContent =
+      json.sekolah || 'Portal Dokumen';
+
+    document.getElementById('npsn').textContent =
+      'NPSN : ' + (json.npsn || '-');
+
+    document.getElementById('tahun').textContent =
+      'TA : ' + (json.tahun || '-');
+
+  }catch(e){
+
+    document.getElementById('msg').style.display='block';
+    document.getElementById('msg').textContent=
+      'Gagal terhubung ke server';
+
+  }finally{
+
+    document.getElementById('loader').style.display='none';
+
+  }
+
+}
+
+async function cari(){
+
+  const nisn =
+    document.getElementById('nisn').value.trim();
+
+  if(!nisn) return;
+
+  const btn =
+    document.getElementById('btnCari');
+
+  btn.disabled = true;
+  btn.innerHTML = 'Mencari...';
+
+  document.getElementById('msg').style.display='none';
+  document.getElementById('result').style.display='none';
+
+  try{
+
+    const res =
+      await fetch(
+        API_URL +
+        '?nisn=' +
+        encodeURIComponent(nisn)
+      );
+
+    const json = await res.json();
+
+    if(json.data){
+
+      document.getElementById('hasilNisn').textContent =
+        json.data.nisn;
+
+      document.getElementById('hasilNama').textContent =
+        json.data.nama;
+
+      document.getElementById('downloadBtn').href =
+        json.data.link;
+
+      document.getElementById('result').style.display =
+        'block';
+
+    }else{
+
+      document.getElementById('msg').style.display='block';
+      document.getElementById('msg').textContent=
+        'Data tidak ditemukan';
+
+    }
+
+  }catch(e){
+
+    document.getElementById('msg').style.display='block';
+    document.getElementById('msg').textContent=
+      'Terjadi kesalahan saat menghubungi server';
+
+  }finally{
+
+    btn.disabled = false;
+    btn.innerHTML = 'Cari Dokumen';
+
+    lucide.createIcons();
+
+  }
+
+}
+
+document.getElementById('nisn')
+.addEventListener('keypress',e=>{
+  if(e.key==='Enter') cari();
+});
+
+loadSekolah();
+lucide.createIcons();
+
 </script>
+
 </body>
 </html>
